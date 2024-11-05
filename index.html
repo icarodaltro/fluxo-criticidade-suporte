@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação de Criticidade de Chamado - Didática</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .question, .result {
+            display: none;
+        }
+        .question.active, .result.active {
+            display: block;
+        }
+        .option {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .option:hover {
+            background-color: #e0e0e0;
+        }
+        .back-button, .reset-button {
+            display: block;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #d0d0d0;
+            border: 1px solid #aaa;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Avaliação de Criticidade de Chamado</h2>
+    <div id="quiz">
+        <!-- Pergunta 1 -->
+        <div class="question active" id="question1">
+            <p><strong>1. Nível de impacto no cliente:</strong></p>
+            <div class="option" onclick="selectAnswer('A', 'question2')">A) Impacto leve - dúvidas ou questões de usabilidade.</div>
+            <div class="option" onclick="selectAnswer('B', 'question2')">B) Impacto moderado - alguma funcionalidade parcial.</div>
+            <div class="option" onclick="selectAnswer('C', 'question2')">C) Impacto significativo - operações críticas afetadas.</div>
+            <div class="option" onclick="selectAnswer('D', 'question2')">D) Impacto severo - operações essenciais paralisadas.</div>
+        </div>
+
+        <!-- Pergunta 2 -->
+        <div class="question" id="question2">
+            <p><strong>2. Criticidade do cliente para o negócio:</strong></p>
+            <div class="option" onclick="selectAnswer('A', 'question3')">A) Cliente de baixo valor contratual (tier 2 e 3).</div>
+            <div class="option" onclick="selectAnswer('B', 'question3')">B) Cliente de valor médio (tier 1).</div>
+            <div class="option" onclick="selectAnswer('C', 'question3')">C) Cliente de alto valor contratual (tier 0).</div>
+            <div class="option" onclick="selectAnswer('D', 'question3')">D) Cliente de valor estratégico (tier S).</div>
+            <div class="back-button" onclick="goBack('question1')">Voltar</div>
+        </div>
+
+        <!-- Pergunta 3 -->
+        <div class="question" id="question3">
+            <p><strong>3. Abrangência do problema:</strong></p>
+            <div class="option" onclick="selectAnswer('A', 'result')">A) Apenas o cliente que reportou.</div>
+            <div class="option" onclick="selectAnswer('B', 'result')">B) Um grupo menor de clientes.</div>
+            <div class="option" onclick="selectAnswer('C', 'result')">C) A maioria dos clientes.</div>
+            <div class="back-button" onclick="goBack('question2')">Voltar</div>
+        </div>
+
+        <!-- Resultado Final -->
+        <div class="result" id="result">
+            <p id="finalMessage"></p>
+            <div class="reset-button" onclick="resetQuiz()">Responder Novamente</div>
+        </div>
+    </div>
+
+    <script>
+        // Array para armazenar as respostas
+        const answers = [];
+
+        // Função para selecionar uma resposta e avançar
+        function selectAnswer(answer, nextId) {
+            answers.push(answer);
+            document.querySelector('.question.active').classList.remove('active');
+
+            if (nextId === 'result') {
+                showResult();
+            } else {
+                document.getElementById(nextId).classList.add('active');
+            }
+        }
+
+        // Função para mostrar o resultado final
+        function showResult() {
+            let message;
+            const resultCode = answers.join('');
+
+            if (resultCode === 'DDC') {
+                message = "Prioridade crítica! Escale para a liderança e acione o procedimento de problemas críticos.";
+            } else if (resultCode === 'CCC' || resultCode === 'CCD') {
+                message = "Prioridade alta! Informe a liderança e acompanhe o problema de perto.";
+            } else if (resultCode === 'BBB' || resultCode === 'BBC') {
+                message = "Prioridade média. Proceda com atenção e registre as ações.";
+            } else {
+                message = "Prioridade baixa. Resolva conforme SLA padrão.";
+            }
+
+            document.getElementById('finalMessage').textContent = message;
+            document.getElementById('result').classList.add('active');
+        }
+
+        // Função para voltar à pergunta anterior
+        function goBack(previousId) {
+            answers.pop();
+            document.querySelector('.question.active').classList.remove('active');
+            document.getElementById(previousId).classList.add('active');
+        }
+
+        // Função para reiniciar o questionário
+        function resetQuiz() {
+            answers.length = 0;
+            document.querySelector('.result.active').classList.remove('active');
+            document.getElementById('question1').classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
